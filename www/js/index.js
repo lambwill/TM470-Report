@@ -278,7 +278,7 @@ for (var i = 0; i < segmentClasses; i++){
     var strBreakMin = segmentBreaks[i]
     var strBreakMax = segmentBreaks[i+1]
     var legendItem = {
-        label: "".concat(strBreakMin, " < ", segmentProperty, " < ", strBreakMax),
+        label: "".concat(strBreakMin.toFixed(0), " < ", segmentProperty, " < ", strBreakMax.toFixed(0)),
         type: "polyline",
         color: segmentColours[i],
         fillColor: segmentColours[i],
@@ -298,88 +298,52 @@ function pop_lsoa_network_3(feature, layer) {
         },
         mouseover: showSegmentRoutes,
     });
-    var popupContent = '<table>\
-            <tr>\
-                <td colspan="2"><strong>local_id</strong><br />' + (feature.properties['local_id'] !== null ? autolinker.link(feature.properties['local_id'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">bicycle</th>\
-                <td>' + (feature.properties['bicycle'] !== null ? autolinker.link(feature.properties['bicycle'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">govtarget_slc</th>\
-                <td>' + (feature.properties['govtarget_slc'] !== null ? autolinker.link(feature.properties['govtarget_slc'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">govtarget_sic</th>\
-                <td>' + (feature.properties['govtarget_sic'] !== null ? autolinker.link(feature.properties['govtarget_sic'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">govnearmkt_slc</th>\
-                <td>' + (feature.properties['govnearmkt_slc'] !== null ? autolinker.link(feature.properties['govnearmkt_slc'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">govnearmkt_sic</th>\
-                <td>' + (feature.properties['govnearmkt_sic'] !== null ? autolinker.link(feature.properties['govnearmkt_sic'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">gendereq_slc</th>\
-                <td>' + (feature.properties['gendereq_slc'] !== null ? autolinker.link(feature.properties['gendereq_slc'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">gendereq_sic</th>\
-                <td>' + (feature.properties['gendereq_slc'] !== null ? autolinker.link(feature.properties['gendereq_slc'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">dutch_slc</th>\
-                <td>' + (feature.properties['dutch_sic'] !== null ? autolinker.link(feature.properties['dutch_sic'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">ebike_slc</th>\
-                <td>' + (feature.properties['ebike_slc'] !== null ? autolinker.link(feature.properties['ebike_slc'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">ebike_sic</th>\
-                <td>' + (feature.properties['ebike_sic'] !== null ? autolinker.link(feature.properties['ebike_sic'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">fast_routes</th>\
-                <td>' + (feature.properties['fast_routes'] !== null ? autolinker.link(feature.properties['fast_routes'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">quiet_routes</th>\
-                <td>' + (feature.properties['quiet_routes'] !== null ? autolinker.link(feature.properties['quiet_routes'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">quiet_pc</th>\
-                <td>' + (feature.properties['quiet_pc'] !== null ? autolinker.link(feature.properties['quiet_pc'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">pctLinkLength</th>\
-                <td>' + (feature.properties['ebike_sic'] !== null ? autolinker.link(feature.properties['ebike_sic'].toLocaleString()) : '') + '</td>\
-            </tr></table>';/*
-            <tr>\
-                <th scope="row">osRoadWidthMinimum</th>\
-                <td>' + (feature.properties['osRoadWidthMinimum'] !== null ? feature.properties['osRoadWidthMinimum'] + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">osRoadWidthAverage</th>\
-                <td>' + (feature.properties['osRoadWidthAverage'] !== null ? autolinker.link(feature.properties['osRoadWidthAverage'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">osGradientAverage</th>\
-                <td>' + (feature.properties['osGradientAverage'] !== null ? autolinker.link(feature.properties['osGradientAverage'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">osGradientMax</th>\
-                <td>' + (feature.properties['osGradientMax'] !== null ? autolinker.link(feature.properties['osGradientMax'].toLocaleString()) : '') + '</td>\
-            </tr>\
-            <tr>\
-                <th scope="row">osLinkCoverage</th>\
-                <td>' + (feature.properties['osLinkCoverage'] !== null ? autolinker.link(feature.properties['osLinkCoverage'].toLocaleString()) : '') + '</td>\
-            </tr>\
-        </table>';
-         */
+    var popupContent = `
+    <h1>PCT Network Segment ID: ${feature.properties['local_id']}</h1>
+    This network link is ${feature.properties['pctLinkLength'] != null ? feature.properties['pctLinkLength'].toFixed(0) : '?'}m long, and in the 2011 census was used by ${feature.properties['bicycle'].toFixed(0)} cycle commuters.<br> 
+    The highway links downloaded from Ordnance Survey cover ${feature.properties['osLinkCoverage'] != null ? (feature.properties['osLinkCoverage']*100).toFixed(2) : 0}% of the pct network segment, and suggests:<br>
+    <ul>
+        <li> Average road width of ${feature.properties['osRoadWidthAverage'] != null ? feature.properties['osRoadWidthAverage'].toFixed(2) : '?'}m</li>
+        <li> Minimum road width of ${feature.properties['osRoadWidthMinimum'] != null ? feature.properties['osRoadWidthMinimum'].toFixed(2) : '?'}m</li>
+        <li> Average gradient of ${feature.properties['osGradientAverage'] != null ? feature.properties['osGradientAverage'].toFixed(2) : '?'} in 1</li>
+        <li> Maximum gradient of ${feature.properties['osGradientMax'] != null ? feature.properties['osGradientMax'].toFixed(2) : '?'} in 1</li>
+    </ul>
+    The table below shows the increase in cycle uptake that the PCT model estimates would be required to meet the various scenario levels: <br>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Scenario</th>
+                <th scope="col">Commuters</th>
+                <th scope="col">Increase</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">Government Target (equality)</th>
+            <td>${feature.properties['govtarget_slc'].toFixed(0)}</td>
+            <td>${feature.properties['govtarget_sic'].toFixed(0)}</td>
+        </tr>
+        <tr>
+            <th scope="row">Government Target (near market)</th>
+            <td>${feature.properties['govnearmkt_slc'].toFixed(0)}</td>
+            <td>${feature.properties['govnearmkt_sic'].toFixed(0)}</td>
+        </tr>
+        <tr>
+            <th scope="row">Gender equality</th>
+            <td>${feature.properties['gendereq_slc'].toFixed(0)}</td>
+            <td>${feature.properties['gendereq_sic'].toFixed(0)}</td>
+        </tr>
+        <tr>
+            <th scope="row">Go Dutch</th>
+            <td>${feature.properties['dutch_slc'].toFixed(0)}</td>
+            <td>${feature.properties['dutch_sic'].toFixed(0)}</td>
+        </tr>
+        <tr>
+            <th scope="row">Ebikes</th>
+            <td>${feature.properties['ebike_slc'].toFixed(0)}</td>
+            <td>${feature.properties['ebike_sic'].toFixed(0)}</td>
+        </tr>
+    </table>`
     layer.bindPopup(popupContent, {maxHeight: 400});
 }
 
