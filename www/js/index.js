@@ -311,22 +311,75 @@ function pop_lsoa_network_3(feature, layer) {
                 <td>' + (feature.properties['govtarget_slc'] !== null ? autolinker.link(feature.properties['govtarget_slc'].toLocaleString()) : '') + '</td>\
             </tr>\
             <tr>\
+                <th scope="row">govtarget_sic</th>\
+                <td>' + (feature.properties['govtarget_sic'] !== null ? autolinker.link(feature.properties['govtarget_sic'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
                 <th scope="row">govnearmkt_slc</th>\
                 <td>' + (feature.properties['govnearmkt_slc'] !== null ? autolinker.link(feature.properties['govnearmkt_slc'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">govnearmkt_sic</th>\
+                <td>' + (feature.properties['govnearmkt_sic'] !== null ? autolinker.link(feature.properties['govnearmkt_sic'].toLocaleString()) : '') + '</td>\
             </tr>\
             <tr>\
                 <th scope="row">gendereq_slc</th>\
                 <td>' + (feature.properties['gendereq_slc'] !== null ? autolinker.link(feature.properties['gendereq_slc'].toLocaleString()) : '') + '</td>\
             </tr>\
             <tr>\
+                <th scope="row">gendereq_sic</th>\
+                <td>' + (feature.properties['gendereq_slc'] !== null ? autolinker.link(feature.properties['gendereq_slc'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
                 <th scope="row">dutch_slc</th>\
-                <td>' + (feature.properties['dutch_slc'] !== null ? autolinker.link(feature.properties['dutch_slc'].toLocaleString()) : '') + '</td>\
+                <td>' + (feature.properties['dutch_sic'] !== null ? autolinker.link(feature.properties['dutch_sic'].toLocaleString()) : '') + '</td>\
             </tr>\
             <tr>\
                 <th scope="row">ebike_slc</th>\
                 <td>' + (feature.properties['ebike_slc'] !== null ? autolinker.link(feature.properties['ebike_slc'].toLocaleString()) : '') + '</td>\
             </tr>\
+            <tr>\
+                <th scope="row">ebike_sic</th>\
+                <td>' + (feature.properties['ebike_sic'] !== null ? autolinker.link(feature.properties['ebike_sic'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">fast_routes</th>\
+                <td>' + (feature.properties['fast_routes'] !== null ? autolinker.link(feature.properties['fast_routes'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">quiet_routes</th>\
+                <td>' + (feature.properties['quiet_routes'] !== null ? autolinker.link(feature.properties['quiet_routes'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">quiet_pc</th>\
+                <td>' + (feature.properties['quiet_pc'] !== null ? autolinker.link(feature.properties['quiet_pc'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">pctLinkLength</th>\
+                <td>' + (feature.properties['ebike_sic'] !== null ? autolinker.link(feature.properties['ebike_sic'].toLocaleString()) : '') + '</td>\
+            </tr></table>';/*
+            <tr>\
+                <th scope="row">osRoadWidthMinimum</th>\
+                <td>' + (feature.properties['osRoadWidthMinimum'] !== null ? feature.properties['osRoadWidthMinimum'] + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">osRoadWidthAverage</th>\
+                <td>' + (feature.properties['osRoadWidthAverage'] !== null ? autolinker.link(feature.properties['osRoadWidthAverage'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">osGradientAverage</th>\
+                <td>' + (feature.properties['osGradientAverage'] !== null ? autolinker.link(feature.properties['osGradientAverage'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">osGradientMax</th>\
+                <td>' + (feature.properties['osGradientMax'] !== null ? autolinker.link(feature.properties['osGradientMax'].toLocaleString()) : '') + '</td>\
+            </tr>\
+            <tr>\
+                <th scope="row">osLinkCoverage</th>\
+                <td>' + (feature.properties['osLinkCoverage'] !== null ? autolinker.link(feature.properties['osLinkCoverage'].toLocaleString()) : '') + '</td>\
+            </tr>\
         </table>';
+         */
     layer.bindPopup(popupContent, {maxHeight: 400});
 }
 
