@@ -6,33 +6,76 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/><!-- <link rel="stylesheet" href="css/leaflet.css"> -->
-        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
         <link rel="stylesheet" href="css/leaflet-measure.css">
 
         <link rel="stylesheet" href="css/leaflet.legend.css" />
         
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
         <style>
         #map {
-            width: 969px;
-            height: 876px;
+            height: 500px;
         }
         </style>
         <title></title>
     </head>
     <body>
-        <div id="map">
-        </div>
+        <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">wjl67</a>
+            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+            <ul class="navbar-nav px-3">
+              <li class="nav-item text-nowrap">
+                <a class="nav-link" href="#">Sign out</a>
+              </li>
+            </ul>
+          </header>
+
+          <main class="container-fluid">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row row-cols-1">
+                        <div class="col">
+                            <div id="map">
+                            </div><!--map-->
+                        </div><!--col-->
+
+                    </div> <!--row-->
+                    <div class="row row-cols-1"></div>
+                        <div class="table-responsive">
+                            <table id="tbl-segments" class="table table-striped" style="width:100%">
+                            </table>
+                        </div><!--table-responsive-->
+                    </div> <!--row-->
+                </div><!--col-9-->
+            </div> <!--row-->
+        </main> <!--container-fluid-->
+
+
+        
         
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> <!-- <script src="js/leaflet.js"></script> -->
+
+
+        
+  
+
 
         <!-- <script src="js/qgis2web_expressions.js"></script> --> <!-- functions that qgis2web uses -->
         <!-- <script src="js/leaflet.rotatedMarker.js"></script> --> <!-- Enables rotation of marker icons in Leaflet. -->
         <!-- <script src="js/rbush.min.js"></script> --> <!-- spatial indexing -->
         <!-- <script src="js/labelgun.min.js"></script> --> <!-- labelling engine -->
         <!-- <script src="js/labels.js"></script> --> <!-- labelling engine -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="js/classybrew.min.js"></script> <!-- generate class breaks based on data -->
 
-        <script src="js/classybrew.min.js"></script> <!-- generate class breaks based on data --></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script> <!-- JQuery extension for data tables -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
         <script src="js/leaflet.pattern.js"></script> <!-- Provides the ability to use SVG patterns as backgrounds for Leaflet Paths. -->
         <script src="js/leaflet-hash.js"></script> <!-- Gives the map a URL based on the view -->
@@ -40,10 +83,12 @@
         <script src="js/leaflet-measure.js"></script> <!-- leaflet plugin for measuring distance etc on map -->
         <script src="js/leaflet.legend.js"></script> <!-- leaflet plugin for adding a map legend -->
 
+        
+
         <!--Load in the map data-->
-        <script src="data/segment_quiet_routes_1.js"></script>
-        <script src="data/segment_fast_routes_2.js"></script>
-        <script src="data/lsoa_network_3.js"></script>
+        <script src="data/segment_quiet_routes.js"></script>
+        <script src="data/segment_fast_routes.js"></script>
+        <script src="data/lsoa_network.js"></script>
         <script src="data/lkp_segment_fast_routes.js"></script>
 
         <!-- Load in my javascript stuff -->

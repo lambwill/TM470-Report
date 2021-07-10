@@ -78,6 +78,21 @@ var layer_CartodbDark_0 = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.f
     maxNativeZoom: 19
 });
 
+
+// Add the Esri_WorldImagery tiles to the map
+map.createPane('pane_Esri_WorldImagery');
+map.getPane('pane_Esri_WorldImagery').style.zIndex = 400;
+var layer_Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    pane: 'pane_Esri_WorldImagery',
+    opacity: 1.0,
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    minZoom: 1,
+    maxZoom: 28,
+    minNativeZoom: 0,
+    maxNativeZoom: 19
+});
+
+
 var defaultBaseLayer = layer_CartodbDark_0
 map.addLayer(defaultBaseLayer);
 
@@ -100,10 +115,10 @@ map.createPane('pane_segment_quiet_routes_1');
 map.getPane('pane_segment_quiet_routes_1').style.zIndex = 401;
 map.getPane('pane_segment_quiet_routes_1').style['mix-blend-mode'] = 'normal';
 
-lyrQuietRoutes = new L.geoJson(json_segment_quiet_routes_1, {
+lyrQuietRoutes = new L.geoJson(json_segment_quiet_routes, {
     attribution: 'PCT',
     interactive: true,
-    dataVar: 'json_segment_quiet_routes_1',
+    dataVar: 'json_segment_quiet_routes',
     layerName: 'Quiet routes',
     pane: 'pane_segment_quiet_routes_1',
     //onEachFeature: pop_segment_quiet_routes_1,
@@ -121,7 +136,8 @@ map.addLayer(lyrQuietRoutes)
 
 // Style the 'Fast Routes' data
 
-function style_segment_fast_routes_2_0() {
+function style_segment_fast_routes_2_0(feature) {
+    routeID = feature.properties.id
     return {
         pane: 'pane_segment_fast_routes_2',
         weight: 2,
@@ -134,10 +150,10 @@ function style_segment_fast_routes_2_0() {
 map.createPane('pane_segment_fast_routes_2');
 map.getPane('pane_segment_fast_routes_2').style.zIndex = 402;
 map.getPane('pane_segment_fast_routes_2').style['mix-blend-mode'] = 'normal';
-lyrFastRoutes = new L.geoJson(json_segment_fast_routes_2, {
+lyrFastRoutes = new L.geoJson(json_segment_quiet_routes, {
     attribution: 'PCT',
     interactive: true,
-    dataVar: 'json_segment_fast_routes_2',
+    dataVar: 'json_segment_quiet_routes',
     layerName: 'Fast routes',
     pane: 'pane_segment_fast_routes_2',
     
@@ -184,10 +200,10 @@ function showSegmentRoutes(e) {
     // lkpSegmentRoutes loaded from lkp_segment_fast_routes.js in index.html
     var segmentRoutes = getSegmentRoutes(segmentID, lkpSegmentRoutes);
 
-    lyrQuietRoutes = new L.geoJson(json_segment_quiet_routes_1, {
+    lyrQuietRoutes = new L.geoJson(json_segment_quiet_routes, {
         attribution: 'PCT',
         interactive: true,
-        dataVar: 'json_segment_quiet_routes_1',
+        dataVar: 'json_segment_quiet_routes',
         layerName: 'Quiet routes',
         pane: 'pane_segment_quiet_routes_1',
         //onEachFeature: pop_segment_quiet_routes_1,
@@ -205,10 +221,10 @@ function showSegmentRoutes(e) {
     });
     map.addLayer(lyrQuietRoutes)
 
-    lyrFastRoutes = new L.geoJson(json_segment_fast_routes_2, {
+    lyrFastRoutes = new L.geoJson(json_segment_quiet_routes, {
         attribution: 'PCT',
         interactive: true,
-        dataVar: 'json_segment_fast_routes_2',
+        dataVar: 'json_segment_quiet_routes',
         layerName: 'Fast routes',
         pane: 'pane_segment_fast_routes_2',
         
@@ -249,9 +265,9 @@ var segmentProperty = 'govtarget_slc';
 // pass values from your geojson object into an empty array
 // see link above to view geojson used in this example
 var segmentValues = [];
-for (var i = 0; i < json_lsoa_network_3.features.length; i++){
-    if (json_lsoa_network_3.features[i].properties[segmentProperty] == null) continue;
-    segmentValues.push(json_lsoa_network_3.features[i].properties[segmentProperty]);
+for (var i = 0; i < json_lsoa_network.features.length; i++){
+    if (json_lsoa_network.features[i].properties[segmentProperty] == null) continue;
+    segmentValues.push(json_lsoa_network.features[i].properties[segmentProperty]);
 }
 
 brewSegment.setSeries(segmentValues);
@@ -287,16 +303,41 @@ for (var i = 0; i < segmentClasses; i++){
     segmentLegend.push(legendItem)
 } 
 
+function highlightSegment(e) {
+    var layer = e.target;
+    layer_lsoa_network_3.setStyle({
+        opacity: 0.2
+    });
+    layer.setStyle({
+        opacity: 1
+    });
 
 
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+}
+
+function resetHighlight(e) {
+    layer_lsoa_network_3.resetStyle(e.target);
+}
 
 function pop_lsoa_network_3(feature, layer) {
     layer.on({
+        /*
         mouseout: function(e) {
             map.removeLayer(lyrQuietRoutes)
             map.removeLayer(lyrFastRoutes)
+            resetHighlight
         },
-        mouseover: showSegmentRoutes,
+        mouseover: function(e) {
+            showSegmentRoutes
+            highlight
+        },
+        */
+        mouseout: resetHighlight,
+        mouseover: highlightSegment
     });
     var popupContent = `
     <h1>PCT Network Segment ID: ${feature.properties['local_id']}</h1>
@@ -351,7 +392,7 @@ function style_lsoa_network_3_0(feature) {
 
     return {
         pane: 'pane_lsoa_network_3',
-        opacity: 1,
+        opacity: 0.75,
         color: brewSegment.getColorInRange(feature.properties[segmentProperty]), // Use ColorBrewer plugin to determine segment colour
         dashArray: '',
         lineCap: 'square',
@@ -364,10 +405,10 @@ function style_lsoa_network_3_0(feature) {
 map.createPane('pane_lsoa_network_3');
 map.getPane('pane_lsoa_network_3').style.zIndex = 403;
 map.getPane('pane_lsoa_network_3').style['mix-blend-mode'] = 'normal';
-var layer_lsoa_network_3 = new L.geoJson(json_lsoa_network_3, {
+var layer_lsoa_network_3 = new L.geoJson(json_lsoa_network, {
     attribution: '',
     interactive: true,
-    dataVar: 'json_lsoa_network_3',
+    dataVar: 'json_lsoa_network',
     layerName: 'layer_lsoa_network_3',
     pane: 'pane_lsoa_network_3',
     onEachFeature: pop_lsoa_network_3,
@@ -378,7 +419,8 @@ map.addLayer(layer_lsoa_network_3);
 
 
 var baseMaps = {"OpenStreetMap": layer_OpenStreetMap_0,
-                "CartoDB Dark Matter": layer_CartodbDark_0};
+                "CartoDB Dark Matter": layer_CartodbDark_0,
+                "Esri World Imagery": layer_Esri_WorldImagery};
 var overlays = {};
 /*
 var overlays = {'lsoa_network<br /> \
@@ -407,9 +449,33 @@ const legend = L.control.Legend({
 })
 .addTo(map);
 
-
-
-
-
-
 setBounds();
+
+
+
+// Sort out the table
+$('#tbl-segments').DataTable( {
+    data: json_lsoa_network.features,
+    columnDefs: [
+        { render: function ( data, type, row ) {
+                var value
+                if (data == null) {
+                    value = ""
+                }
+                else {
+                    value = data.toFixed(2);
+                 }
+                 return value},
+            targets: [2,3,4,5,6,7] }
+    ],
+    columns: [
+        { data: 'properties.bicycle', title: 'Census' },
+        { data: 'properties.' + segmentProperty, title: segmentProperty},
+
+        { data: 'properties.pctLinkLength', title: 'Link length'},
+        { data: 'properties.osRoadWidthAverage', title: 'Ave. road width'},
+        { data: 'properties.osRoadWidthMinimum', title: 'Min. road width'},
+        { data: 'properties.osGradientAverage', title: 'Ave. gradient'},
+        { data: 'properties.osGradientMax', title: 'Max. gradient'},
+    ]
+} );
