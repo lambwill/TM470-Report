@@ -1,98 +1,161 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-        <link rel="stylesheet" href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/leaflet-measure.css">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" 
+    crossorigin="anonymous">
 
-        <link rel="stylesheet" href="css/leaflet.legend.css" />
+    <!-- Leaflt stylesheet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    
+    <!-- Leaflet plugin for creating legends with HTML 
+        https://github.com/consbio/Leaflet.HtmlLegend -->
+    <link rel="stylesheet" href="css/L.Control.HtmlLegend.css" />
+
+    <style>
         
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-        <style>
-        #map {
-            height: 500px;
+        html, body, #container {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
         }
-        </style>
-        <title></title>
-    </head>
-    <body>
-        <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">wjl67</a>
-            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-            <ul class="navbar-nav px-3">
-              <li class="nav-item text-nowrap">
-                <a class="nav-link" href="#">Sign out</a>
-              </li>
-            </ul>
-          </header>
 
-          <main class="container-fluid">
-            <div class="row">
-                <div class="col-9">
-                    <div class="row row-cols-1">
-                        <div class="col">
-                            <div id="map">
-                            </div><!--map-->
-                        </div><!--col-->
+        /* styling for map container */
+        #map {
+            width: auto;
+            height: 100%;
+        }
 
-                    </div> <!--row-->
-                    <div class="row row-cols-1"></div>
-                        <div class="table-responsive">
-                            <table id="tbl-segments" class="table table-striped" style="width:100%">
-                            </table>
-                        </div><!--table-responsive-->
-                    </div> <!--row-->
-                </div><!--col-9-->
-            </div> <!--row-->
-        </main> <!--container-fluid-->
+        /* styling for info box */
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h3 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+    </style>
 
 
+
+</head>
+<body>
+
+    <nav class="navbar bg-light navbar-light navbar-expand-sm">
+        <div class="container">
+            <a class="navbar-brand" href="https://www.linkedin.com/in/lambwill/">
+                <img src="images/wjl67.JPG" style="width: 40px;" class="rounded-circle" alt="Will Lamb"> </img>
+            </a>
+            <div class="navbar-nav justify-content-right">
+
+
+            </div> <!-- navbar-nav -->
+
+    </nav>
+
+    <div id="container" class="pb-5"><!-- padding at the bottom(?) to account for nav bar -->
+        <div id="map" class="bg-dark"></div>
+    </div> <!-- map container -->
+
+
+    <!-- --------------------hidden items---------------------------- -->
+    <!-- svg line for legend -->
+    <div id="legendLine" style="display: none">
+        <svg height=0.8em width=3rem>
+            <line x1=0em y1=0.5em x2=3em y2=0.5em />
+        </svg>
+    </div>
+
+    <div id="pctDropdown" style="display: none">
+        <div class="dropdown btn-group">
+            <a class="btn btn-sm btn-outline-dark dropdown-toggle" href="#" type="button" id="dropdownScenario" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            PCT Scenario
+            </a>
         
+            <div class="dropdown-menu position-absolute" aria-labelledby="dropdownScenario" id="menuScenario">
+                <a class="dropdown-item" id="govtarget"
+                data-toggle="tooltip" data-placement="left"
+                title="Doubling the number of cycle journeys at a national level. Local factors such as journey length and hilliness affect how much growth would be expected for any individual location. This scenario takes hilliness and journey distance into account alone."
+                href="#">Government Target (Equality)</a>
+                <a class="dropdown-item" id="govnearmkt"
+                data-toggle="tooltip" data-placement="left"
+                title="The Near Market scenario builds on the Equality scenario by taking into account other local socio-economic factors including age, sex, ethnicity, car ownership, and income deprivation." 
+                href="#">Government Target (Near Market)</a>
+                <a class="dropdown-item" id="gendereq"
+                data-toggle="tooltip" data-placement="left"
+                title="This scenario represents the increase in cycling that would be expected if as many women were to cycle as men." 
+                href="#">Gender equality</a>
+                <a class="dropdown-item" id="dutch"
+                data-toggle="tooltip" data-placement="left"
+                title="The increase in cycling that would be expected if English people were as likely to cycle a given route as the Dutch would be to cycle a route of equal distance and hilliness in Holland." 
+                href="#">Go Dutch</a>
+                <a class="dropdown-item" id="ebike"
+                data-toggle="tooltip" data-placement="left"
+                title="The increase in cycling that would be expected in the Go Dutch scenario if ebikes were widely adopted" 
+                href="#">Ebikes</a>
+            </div> <!-- dropdown-menu -->
+        </div> <!-- dropdown -->
+
+        <div class="dropdown btn-group">
+            <a class="btn btn-outline-dark btn-sm dropdown-toggle" href="#" type="button" id="dropdownChange" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Measure
+            </a>
         
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> <!-- <script src="js/leaflet.js"></script> -->
+            <div class="dropdown-menu position-absolute" aria-labelledby="dropdownChange" id="menuChange">
+                <a class="dropdown-item" id="total"
+                data-toggle="tooltip" data-placement="left"
+                title="Total cyclists forcast to achieve scenario target"
+                href="#">Total cyclists</a>
+                <a class="dropdown-item" id="increase"
+                data-toggle="tooltip" data-placement="left"
+                title="Increase in cyclists forcast to achieve scenario target" 
+                href="#">Increase in cyclists</a>
+            </div> <!-- dropdown-menu -->
+        </div> <!-- dropdown -->
+    </div>
 
 
-        
-  
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
 
+    <!-- bootstrap -->
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!-- jQuery  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-        <!-- <script src="js/qgis2web_expressions.js"></script> --> <!-- functions that qgis2web uses -->
-        <!-- <script src="js/leaflet.rotatedMarker.js"></script> --> <!-- Enables rotation of marker icons in Leaflet. -->
-        <!-- <script src="js/rbush.min.js"></script> --> <!-- spatial indexing -->
-        <!-- <script src="js/labelgun.min.js"></script> --> <!-- labelling engine -->
-        <!-- <script src="js/labels.js"></script> --> <!-- labelling engine -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="js/classybrew.min.js"></script> <!-- generate class breaks based on data -->
+    <!-- initialize all tooltips on the page -->
+    <!-- https://getbootstrap.com/docs/4.0/components/tooltips/ -->
+    <script>$(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })</script>
 
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script> <!-- JQuery extension for data tables -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="js/leaflet-hash.js"></script> <!-- Gives the map a URL based on the view -->
+    <script src="js/classybrew.min.js"></script> <!-- generate class breaks based on data -->
+    <script src="js/L.Control.HtmlLegend.js"></script> <!-- Leaflet plugin for creating legends with HTML -->
 
-        <script src="js/leaflet.pattern.js"></script> <!-- Provides the ability to use SVG patterns as backgrounds for Leaflet Paths. -->
-        <script src="js/leaflet-hash.js"></script> <!-- Gives the map a URL based on the view -->
-        <script src="js/Autolinker.min.js"></script> <!-- Tidies up hyperlinks -->
-        <script src="js/leaflet-measure.js"></script> <!-- leaflet plugin for measuring distance etc on map -->
-        <script src="js/leaflet.legend.js"></script> <!-- leaflet plugin for adding a map legend -->
+    <!--Load in the map data-->
+    <script src="data/study_boundary.js"></script>
+    <script src="data/lsoa_network.js"></script>
+    <script src="data/segment_quiet_routes.js"></script>
+    <script src="data/segment_fast_routes.js"></script>
+    <script src="data/lkp_segment_fast_routes.js"></script>
 
-        
-
-        <!--Load in the map data-->
-        <script src="data/segment_quiet_routes.js"></script>
-        <script src="data/segment_fast_routes.js"></script>
-        <script src="data/lsoa_network.js"></script>
-        <script src="data/lkp_segment_fast_routes.js"></script>
-
-        <!-- Load in my javascript stuff -->
-        <script src="js/index.js"></script>
-
-    </body>
+    <script src="js/index.js"></script> <!-- Load in my javascript stuff -->
+</body>
 </html>
