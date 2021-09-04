@@ -260,7 +260,9 @@ function updatePCTdisplay(pctProps) {
         if (feature) {
             number = feature.properties[segmentProperty]
             color = brewSegment.getColorInRange(number) // Use ColorBrewer plugin to determine segment colour
-            numBreak =  brewSegment.getColors().findIndex(color) + 1
+            breakColours = brewSegment.getColors()
+
+            numBreak =  breakColours.indexOf(color) + 2
         }
         // var number = feature ? feature.properties[segmentProperty] : 0
         return {
@@ -270,7 +272,7 @@ function updatePCTdisplay(pctProps) {
             dashArray: '',
             lineCap: 'square',
             lineJoin: 'bevel',
-            weight: 5.0,
+            weight: 3.0,
             fill: false,
             interactive: true,}
         
