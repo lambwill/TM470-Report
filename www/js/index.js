@@ -385,8 +385,10 @@ info.update = function (props) {
     var osDataHTML = ""
     if (props) {
     osDataHTML = props.osLinkCoverage ? 
-        `This network link is` + props.pctLinkLength.toFixed(0) + `m long, and in the 2011 census was used by ` + props.bicycle.toFixed(0) + ` cycle commuters.<br> 
-        The highway links downloaded from Ordnance Survey cover ` + (props.osLinkCoverage*100).toFixed(2) + `% of the pct network segment, and suggests:<br>
+        `This network link is ` + props.pctLinkLength.toFixed(0) + `m long, and in the 2011 census was used by ` + props.bicycle.toFixed(0) + ` cycle commuters.<br>` +
+        `This network link form part of ` + props.fast_routes.toFixed(0) + ` of the fastest routes  between LSOAs, and ` + props.quiet_pc.toFixed(0) + `% of those (` +
+        props.quiet_routes.toFixed(0) + `) are also the most cycle friendly route between those LSOAs. <br>` +
+        `The highway links downloaded from Ordnance Survey cover ` + (props.osLinkCoverage*100).toFixed(2) + `% of the pct network segment, and suggests:<br>
         <ul>
             <li> Average road width of ` + props.osRoadWidthAverage.toFixed(2) + `m</li>
             <li> Minimum road width of ` + props.osRoadWidthMinimum.toFixed(2) + `m</li>
